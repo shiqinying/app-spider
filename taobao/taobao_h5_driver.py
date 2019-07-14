@@ -74,37 +74,45 @@ class Crawler(object):
         return time.sleep(s * self._random())
 
     def if_login(self):
-        if self.d(text="短信验证码登录").exists():
+        if self.d(resourceId="username").exists():
             username = self.username
             pwd = self.pwd
             self.d(resourceId="username").click()
+            self._sleep()
             for _ in list(username):
                 self.d.send_keys(_)
+            self._sleep()
             self.d(resourceId="password").click()
-            # self.d.send_keys(pwd)
             self._sleep()
             self.d(focused=True).set_text(pwd)
+            self._sleep()
             self.d(resourceId="btn-submit").click()
+            self._sleep()
             # 点击首页
             if self.d.xpath(
                 "//android.webkit.WebView/android.view.View[1]/android.view.View[6]/android.view.View[1]"
-            ).exists:
+            ):
                 self.d.xpath(
                     "//android.webkit.WebView/android.view.View[1]/android.view.View[6]/android.view.View[1]"
                 ).click()
             # 是否出现保存密码
+            self._sleep()
             if self.d(resourceId="com.android.chrome:id/infobar_icon").exists():
                 self.d(resourceId="com.android.chrome:id/infobar_close_button").click()
-            self._sleep(10)
+            self._sleep(1)
 
     def run(self):
+        '''
+        注意操作间隔不要太短
+        :return:
+        '''
         # 服务条款和隐私声明
         self._sleep()
         if self.d(resourceId="com.android.chrome:id/terms_accept").exists():
             self.d(resourceId="com.android.chrome:id/terms_accept").click()
             self._sleep(1)
         #  改用搜狗搜索弹出框
-        if self.d(text="改用搜狗搜索").exists():
+        if self.d(text="改用搜狗搜索").exists(3):
             self.d(text="继续使用 Google").click()
             self._sleep(1)
         # 点击并输入网址
@@ -115,13 +123,16 @@ class Crawler(object):
         # 判断是否需要登陆
         self._sleep(1)
         self.if_login()
-        # 判断是否出现 ‘chrome 正在尝试使用 nfc’
-        if self.d(resourceId="com.lbe.security.miui:id/contentPanel").exists(60):
-            # 拒绝
-            self.d(resourceId="android:id/button2").click()
+        # 是否出现启用nfc功能弹窗
+        if self.d(text='允许').exists():
+            self.d(text='允许').click()
         # 爬取到一定次数后打开淘宝首页会比较慢，设定一个长时等待条件
-        if self.d(text="天猫").exists(60):
-            pass
+        if self.d(text="我的淘宝").exists(60):
+            self._sleep()
+            self.d.xpath('//*[@text="淘宝网触屏版"]/android.view.View[1]/android.view.View[6]/android.view.View[4]').click()
+            self._sleep()
+            self.if_login()
+
         # 搜索宝贝，（反爬）主页加载完毕后，点击搜索框有时会无效，循环判断页面是否跳转
         while True:
             if self.d(text="寻找宝贝店铺").exists(1):
@@ -132,16 +143,17 @@ class Crawler(object):
         for kw in self.kws:
             self._sleep()
             #点击并清除搜索框
-            self.d(resourceId="J_Search").click()
+            if self.d(resourceId="J_Search").exists(60):
+                self.d(resourceId="J_Search").click()
             for _ in range(10):
                 self.d.press('delete')
             for _ in list(kw):
                 self.d.send_keys(_)
-            self.d(text="提交").click()
+            self.d.press("enter")
+            print('正在搜索：',kw)
             self._sleep(3)
-            self.if_login()
             # 底部是否出现‘打开手机淘宝app’
-            if self.d(text="打开手机淘宝App").exists(30):
+            if self.d(text="打开手机淘宝App").exists(10):
                 # self.d(resourceId="lbfa7b_close").click() "lbfa7b_close" 这个值每次都会发生变化
                 self.d.click(0.039, 0.9)
             # 点击并滑动分页器到最后一页,(反爬分析)：顺序点击会自动后退刷新
@@ -150,13 +162,16 @@ class Crawler(object):
                 [(0.079, 0.919), (0.032, 0.919), (0.999, 0.919)], 2 * self._random()
             )
             # 倒序遍历翻页
+            page_num = 100
+
             while True:
+                print('当前在第{}页'.format(str(page_num)))
                 self.d(text="上一页").click()
-                self._sleep(2)
-                if self.d(text=self.page).exists():
+                page_num -= 1
+                self._sleep(1)
+                if self.d(text=self.page).exists(1) and page_num<=5:
                     print("到达第{}页，遍历完毕".format(self.page))
                     break
-                self.if_login()
             self.d.press("back")
 
 
@@ -165,13 +180,23 @@ if __name__ == "__main__":
     手机：小米8
     app：chrome
     注意：使用h5页面之前要卸载谷歌应用商城和淘宝app，不然会强制跳转
+    反爬分析：使用本地网络访问能够持续不登陆状态访问一段时间（50页到100页），到达一定阈值后会提示登录，登录无验证码
+    使用代理ip（阿布云全国动态ip）会刺激反爬，访问即要求登陆，登录有手机短信验证码，切换IP无网络响应，禁用cookie反爬无明显减弱
+    换回本地网络网络恢复，证明淘宝并没有根据手机设备信息进行验证
+    所以怀疑淘宝有ip黑名单，对主流的代理ip爬取建立黑名单ip池，对黑名单里的ip进行强验证
+    
+    更新策略：在没有可靠ip的情况下，不登陆爬取有些不现实，所以进入主页面首先进行登录
+    
+    登录过程中善用sleep，不然操作间隔太短容易被识别造成卡死
+    
+    遍历页数的时候，反爬系统会不定时返回第一页（比如在第72页之后返回第1页停止）
     """
     device = "50eb01c7"  # 127.0.0.1:62028  192.168.31.218:5555
     app = "com.android.chrome"
     swipe_duration = 0.05
     url = "https://h5.m.taobao.com"
     kws = ["小米", "华为", "三星", "iphone", "HTC"]
-    page = 98
+    page = 1
     text = '没有更多了~'
     username= TAOBAO_USERNAME
     pwd = TAOBAO_PWD
