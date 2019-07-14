@@ -1,5 +1,9 @@
 # app-spider
 uiautomator2+mitmdump实现对app的爬取
+
+# 架构
+
+![image](https://github.com/shiqinying/app-spider/raw/master/screenshots/架构.png)
 # 效果预览
 淘宝
 
@@ -27,7 +31,7 @@ fresh
 * 将config_template.py文件更改为config.py,配置相应变量
 * 创建虚拟环境
 ```shell
-mkvirtualenv env_name --python3.6
+mkvirtualenv --python==指定的python版本 env_name
 workon env_name
 ```
 * 安装依赖包 pip install -r requirements.txt
