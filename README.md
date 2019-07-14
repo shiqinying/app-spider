@@ -1,7 +1,7 @@
 # app-spider
 uiautomator2+mitmdump实现对app的爬取
 # 效果预览
-![image](https://github.com/shiqinying/app-spider/tree/master/screenshots/taobao/taobao_h5.gif)
+![image](https://github.com/shiqinying/app-spider/raw/master/screenshots/taobao/taobao_h5.gif)
 
 
 # 环境
