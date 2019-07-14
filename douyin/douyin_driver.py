@@ -98,11 +98,11 @@ class Crawler(object):
 
     def search(self):
         # 点击搜索
-        self.d(resourceId="com.ss.android.ugc.aweme:id/avl").click()
+        self.d(description="搜索").click()
         # 选中搜索框
-        self.d(resourceId="com.ss.android.ugc.aweme:id/ca4").click()
+        self.d(resourceId="com.android.systemui:id/status_bar_contents").down(className='android.widget.LinearLayout').click()
         # 清除搜索框
-        self.d(resourceId="com.ss.android.ugc.aweme:id/ca4").clear_text()
+        self.d(focused=True).clear_text()
         time.sleep(2 * self._random())
         # 从队列获取一个需要搜索的star
         star = self.q.get()
@@ -118,12 +118,10 @@ class Crawler(object):
         self.d(resourceId="android:id/text1", text="用户").click()
         # 点击第一个用户
         time.sleep(2 * self._random())
-        self.d.xpath(
-            '//*[@resource-id="com.ss.android.ugc.aweme:id/b9h"]/android.widget.LinearLayout[1]'
-        ).click()
+        self.d(className="android.widget.LinearLayout",instance=4).click()
         # 点击粉丝
         time.sleep(2 * self._random())
-        self.d(resourceId="com.ss.android.ugc.aweme:id/aeu").click()
+        self.d(text="粉丝").click()
         # 滑动粉丝列表
         time.sleep(2 * self._random())
         self.swipe_y()
@@ -154,8 +152,8 @@ class Crawler(object):
         # 输入密码
         self.d(focused=True).set_text(self.pwd)
         time.sleep(1 * self._random())
-        # 点选我已阅读 用户协议
-        self.d(text="我已阅读并同意 用户协议 和 隐私政策").click()
+        # 点选我已阅读 用户协议 ,容易误点‘用户协议’，采用相对定位
+        self.d(text="我已阅读并同意 用户协议 和 隐私政策").left(className='android.widget.ImageView').click()
         time.sleep(1 * self._random())
         # 点击登录
         self.d(description="确认").click()
@@ -174,7 +172,7 @@ class Crawler(object):
                 # 通过超级鹰平台识别验证码
                 captcha_code = self._chaojiying()
                 # 点击验证码输入框
-                self.d(resourceId="com.ss.android.ugc.aweme:id/po").click()
+                self.d(className="android.widget.EditText").click()
                 # 输入验证码
                 self.d.send_keys(captcha_code)
                 self.d(text="确定").click()
@@ -192,22 +190,21 @@ class Crawler(object):
                     time.sleep(2 * self._random())
                     print("登陆成功")
                     break
-            # 判断是否出现手机验证码，暂且手动输入，出错概率很低，不必循环判断
-            if self.d(text="为保护你的账号安全，请重新验证").exists():
-                self.d(text="获取验证码").click()
-                time.sleep(2 * self._random())
-                self.d(text="输入验证码").click()
-                tel_captcha = input("请输入手机验证码：")
-                self.d.send_keys(tel_captcha)
-                # 点击确认
-                self.d(resourceId="com.ss.android.ugc.aweme:id/o1").click()
-                time.sleep(2 * self._random())
-                print("登陆成功")
-                break
             else:
                 print("登陆成功")
                 break
 
+        # 判断是否出现手机验证码，暂且手动输入，出错概率很低，不必循环判断
+        if self.d(text="为保护你的账号安全，请重新验证").exists():
+            self.d(text="获取验证码").click()
+            time.sleep(2 * self._random())
+            self.d(text="输入验证码").click()
+            tel_captcha = input("请输入手机验证码：")
+            self.d.send_keys(tel_captcha)
+            # 点击确认
+            self.d(resourceId="com.ss.android.ugc.aweme:id/o1").click()
+            time.sleep(2 * self._random())
+            print("登陆成功")
     def save_captcha(self):
         """
         截取保存图片验证码
@@ -215,7 +212,7 @@ class Crawler(object):
         """
         time.sleep(2 * self._random())
         # 获取验证码元素边框像素位置  例：bountds={'top': 385,'right': 360,'bottom': 585,'left': 200}
-        bounds = self.d(resourceId="com.ss.android.ugc.aweme:id/pn").info.get("bounds")
+        bounds = self.d(text="请输入图片中的字符").down(className='android.widget.ImageView').info.get("bounds")
         bounts = (bounds["left"], bounds["top"], bounds["right"], bounds["bottom"])
         # 截屏
         screen_shot = self.d.screenshot()
@@ -271,7 +268,7 @@ if __name__ == "__main__":
     device = "50eb01c7"  # 127.0.0.1:62028  192.168.31.218:5555
     app = "com.ss.android.ugc.aweme"
     swipe_duration = 0.05
-    hot_stars = ["1651144627", "1101395521", "jingyingGL", "杨幂", "陈赫", "何炅", "迪丽热巴"]
+    hot_stars = ["1651144627","迪丽热巴", "1101395521", "jingyingGL", "陈赫", "何炅"]
     chaojiying_name = CJY_NAME
     chaojiying_pwd = CJY_PWD
     chaojiying_soft_id = CJY_SOFT_ID  # http://www.chaojiying.com/user/mysoft/

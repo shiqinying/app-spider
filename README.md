@@ -1,7 +1,19 @@
 # app-spider
 uiautomator2+mitmdump实现对app的爬取
 # 效果预览
+淘宝
+
 ![image](https://github.com/shiqinying/app-spider/raw/master/screenshots/taobao/taobao_h5.gif)
+
+抖音
+
+![image](https://github.com/shiqinying/app-spider/raw/master/screenshots/douyin/douyin_driver.gif)
+
+fresh
+
+![image](https://github.com/shiqinying/app-spider/raw/master/screenshots/fresh/youxian_driver.gif)
+
+
 
 
 # 环境

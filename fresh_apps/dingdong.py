@@ -118,8 +118,9 @@ if __name__ == "__main__":
     模拟器：127.0.0.1:62028
     小米8：192.168.31.218:5555
     叮咚买菜：com.yaya.zone
+    这个app使用的夜神模拟器，在我的小米8上并没有返回数据，可以尝给手机装xponsed框架
     """
     crawler = Crawler(
-        device="192.168.31.218:5555", app="com.yaya.zone", swipe_duration=0.01
+        device="127.0.0.1:62028", app="com.yaya.zone", swipe_duration=0.01
     )
     crawler.run()
