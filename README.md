@@ -36,6 +36,15 @@ workon env_name
 ```
 * 安装依赖包 pip install -r requirements.txt
 
-    （生成requirements.txt方法 pip install -r requirements.txt）
+    （生成requirements.txt方法 pip freeze > requirements.txt）
     
-* 
+    或者可以手动安装
+```
+    pip install uiautomator2
+    pip install mitmproxy
+    pip install redis
+    pip install pymongo
+    
+```
+    
+*  

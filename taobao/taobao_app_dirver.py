@@ -1,7 +1,7 @@
 import uiautomator2 as u2
 import time
 import random
-
+from config import *
 
 class Crawler(object):
     def __init__(self, device, app, swipe_duration=0.05):
@@ -80,19 +80,22 @@ class Crawler(object):
         启动
         :return: None
         """
+        time.sleep(2)
+        if self.driver(text='允许').exists():
+            self.driver(text='允许').click()
+        time.sleep(2)
         if self.driver(text='温馨提示').exists():
             self.driver(resourceId="com.taobao.taobao:id/yes").click()
-        time.sleep(5)
+        time.sleep(3)
         if self.driver(text='允许').exists():
             self.driver(text='允许').click()
         time.sleep(2*self._random())
         self.driver(resourceId="com.taobao.taobao:id/home_searchedit").click()
-
         for kw in kws:
             self.search(kw)
 
 if __name__ == "__main__":
 
     kws = ['小米','苹果','华为','三星']
-    crawler = Crawler(device="50eb01c7", app="com.taobao.taobao", swipe_duration=0.05)
+    crawler = Crawler(device=DEVICES['xiaomi8']['name'], app=APP['taobao'], swipe_duration=0.05)
     crawler.run(kws=kws)

@@ -1,7 +1,7 @@
 import uiautomator2 as u2
 import time
 import random
-
+from config import *
 
 class Crawler(object):
     def __init__(self, device, app, swipe_duration=0.05):
@@ -183,9 +183,9 @@ class Crawler(object):
 
 if __name__ == "__main__":
     """
-    模拟器：127.0.0.1:62028
-    小米8：192.168.31.218:5555  50eb01c7
-    京东到家：com.jingdong.pdj
+
+    京东到家：安装xp+JTM可以抓取到数据包，良心
     """
-    crawler = Crawler(device="50eb01c7", app="com.jingdong.pdj", swipe_duration=0.01)
+    print(DEVICES['xiaomi8']['name'])
+    crawler = Crawler(device=DEVICES['xiaomi8']['name'], app=APP["jingdongdaojia"], swipe_duration=0.01)
     crawler.run()

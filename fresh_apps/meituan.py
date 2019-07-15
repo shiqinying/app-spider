@@ -1,7 +1,7 @@
 import uiautomator2 as u2
 import time
 import random
-
+from config import *
 
 class Crawler(object):
     def __init__(self, device, app, swipe_duration=0.05):
@@ -166,9 +166,9 @@ class Crawler(object):
 
 if __name__ == "__main__":
     """
-    模拟器：127.0.0.1:62028
-    小米8：192.168.31.218:5555  50eb01c7
-    美团：com.sankuai.meituan
+
+    美团：私有协议，无法抓包
+    策略：手机浏览器访问H5页面 TODO
     """
-    crawler = Crawler(device="50eb01c7", app="com.sankuai.meituan", swipe_duration=0.05)
+    crawler = Crawler(device=DEVICES['xiaomi8']['name'], app=APP["meituan"], swipe_duration=0.05)
     crawler.run()

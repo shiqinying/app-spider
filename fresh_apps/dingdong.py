@@ -1,6 +1,6 @@
 import uiautomator2 as u2
 import time
-
+from config import *
 
 class Crawler(object):
     def __init__(self, device, app, swipe_duration=0.05):
@@ -55,24 +55,25 @@ class Crawler(object):
         while True:
             time.sleep(2)
             # 获取当前屏幕上所有分类名称
-            current_items = self.driver(resourceId="com.yaya.zone:id/name")
-            current_items_name = [
-                name.get_text() for name in current_items if name.get_text() != "推荐"
-            ]
-            if not current_items_name:
-                print("获取控件列表失败")
-                return
-            print(current_items_name)
-            # 遍历当前屏幕没有点击过的分类
-            for name in current_items_name:
-                if name not in clicked_items:
-                    self.driver(text=name).click()
-                    clicked_items.append(name)
-                    print("正在处理" + ">" * 10 + name)
-                    self.swipe()
-                    if name == "厨房用品":
-                        print("操作完成")
-                        return
+            if self.driver(resourceId="com.yaya.zone:id/name").exists(30):
+                current_items = self.driver(resourceId="com.yaya.zone:id/name")
+                current_items_name = [
+                    name.get_text() for name in current_items if name.get_text() != "推荐"
+                ]
+                if not current_items_name:
+                    print("获取控件列表失败")
+                    return
+                print(current_items_name)
+                # 遍历当前屏幕没有点击过的分类
+                for name in current_items_name:
+                    if name not in clicked_items:
+                        self.driver(text=name).click()
+                        clicked_items.append(name)
+                        print("正在处理" + ">" * 10 + name)
+                        self.swipe()
+                        if name == "厨房用品":
+                            print("操作完成")
+                            return
 
     def swipe(self):
         """
@@ -102,25 +103,30 @@ class Crawler(object):
         if self.driver(resourceId="com.yaya.zone:id/iv_close").exists(timeout=5):
             self.driver(resourceId="com.yaya.zone:id/iv_close").click()
             print("跳过弹窗广告")
+        time.sleep(3)
         # 点击<分类>
-        if self.driver(resourceId="com.yaya.zone:id/tab_category").exists():
+        if self.driver(resourceId="com.yaya.zone:id/tab_category").exists(30):
             self.driver(resourceId="com.yaya.zone:id/tab_category").click()
             print("点击分类")
         else:
             print("点击 <分类> 失败")
             return
+        time.sleep(2)
         # 遍历分类目录
         self.handle_category()
 
 
 if __name__ == "__main__":
     """
-    模拟器：127.0.0.1:62028
-    小米8：192.168.31.218:5555
-    叮咚买菜：com.yaya.zone
-    这个app使用的夜神模拟器，在我的小米8上并没有返回数据，可以尝给手机装xponsed框架
+    叮咚买菜
+    反爬分析：
+    手机不安装xponsed+JustTrustME 自动化和代理都不会返回数据
+    本地代理拦截一段时间对方会停止返回数据
+    使用动态代理ip访问恢复正常
+    虽然app很小，但是还是有一定的反爬策略
     """
+    print(DEVICES['jinli']['name'])
     crawler = Crawler(
-        device="127.0.0.1:62028", app="com.yaya.zone", swipe_duration=0.01
+        device=DEVICES['jinli']['name'], app=APP["dingdong"], swipe_duration=0.01
     )
     crawler.run()

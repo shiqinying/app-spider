@@ -123,5 +123,5 @@ if __name__ == "__main__":
     phone = WECHAT_PHONE
     pwd = WECHAT_PWD
     friend_total= '716'
-    crawler = Crawler(device="50eb01c7", app="com.tencent.mm", swipe_duration=0.05,friend_total=friend_total)
+    crawler = Crawler(device=DEVICES['xiaomi8']['name'], app=APP["weixin"], swipe_duration=0.05,friend_total=friend_total)
     crawler.run(phone,pwd)

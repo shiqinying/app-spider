@@ -191,8 +191,8 @@ if __name__ == "__main__":
     
     遍历页数的时候，反爬系统会不定时返回第一页（比如在第72页之后返回第1页停止）
     """
-    device = "50eb01c7"  # 127.0.0.1:62028  192.168.31.218:5555
-    app = "com.android.chrome"
+    device = DEVICES['xiaomi8']['name']
+    app = APP["chrome"]
     swipe_duration = 0.05
     url = "https://h5.m.taobao.com"
     kws = ["小米", "华为", "三星", "iphone", "HTC"]

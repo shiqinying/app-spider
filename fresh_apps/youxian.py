@@ -1,6 +1,6 @@
 import uiautomator2 as u2
 import time
-
+from config import *
 
 class Crawler(object):
     def __init__(self, device, app, swipe_duration=0.05):
@@ -134,6 +134,6 @@ if __name__ == "__main__":
     每日优鲜：cn.missfresh.application
     """
     crawler = Crawler(
-        device="50eb01c7", app="cn.missfresh.application", swipe_duration=0.01
+        device=DEVICES['xiaomi8']['name'], app=APP["youxian"], swipe_duration=0.01
     )
     crawler.run()

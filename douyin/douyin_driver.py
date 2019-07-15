@@ -136,6 +136,9 @@ class Crawler(object):
         #d.xpath('//*[@resource-id="com.ss.android.ugc.aweme:id/ccf"]/android.widget.FrameLayout[5]')
         #反爬分析：xpath路径是动态变化的，应该是隔天变动的，改用坐标点击
         self.d(text='我').click()
+        time.sleep(2)
+        if self.d(text='手机验证码或密码登录').exists():
+            self.d(text="手机验证码或密码登录").click()
         # 点击屏幕右上角密码登陆
         self.d(text="密码登录").click()
         time.sleep(2 * self._random())
@@ -265,8 +268,8 @@ if __name__ == "__main__":
     最坏方案使用像素相对位置d.click(xxx,ooo)
     项目中如果有元素不能定位，请按照如上方案更改
     """
-    device = "50eb01c7"  # 127.0.0.1:62028  192.168.31.218:5555
-    app = "com.ss.android.ugc.aweme"
+    device = DEVICES['xiaomi8']['name']
+    app = APP["douyin"]
     swipe_duration = 0.05
     hot_stars = ["1651144627","迪丽热巴", "1101395521", "jingyingGL", "陈赫", "何炅"]
     chaojiying_name = CJY_NAME
