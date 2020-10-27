@@ -7,7 +7,7 @@ cffi==1.12.3
 chardet==3.0.4
 click==6.7
 colorama==0.4.1
-cryptography==2.3.1
+cryptography==3.2
 decorator==4.4.0
 deprecation==2.0.6
 docopt==0.6.2
