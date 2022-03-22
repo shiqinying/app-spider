@@ -22,7 +22,7 @@ kaitaistruct==0.8
 ldap3==2.5.2
 logzero==1.5.0
 lxml==4.3.4
-mitmproxy==4.0.4
+mitmproxy==8.0.0
 packaging==19.0
 passlib==1.7.1
 Pillow==6.1.0
